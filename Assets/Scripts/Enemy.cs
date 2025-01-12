@@ -46,15 +46,15 @@ public class Enemy : MonoBehaviour
     private void Reflect()
     {
         Vector3 directionToTarget = (_points[_currentPoint].position - transform.position).normalized;
+        float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
 
-        if (directionToTarget.x > 0 && facingDirection != 1)
+        if (directionToTarget.x > 0)
         {
-            _sprite.flipX = false;
             facingDirection = 1;
         }
-        else if (directionToTarget.x < 0 && facingDirection != -1)
+        else if (directionToTarget.x < 0)
         {
-            _sprite.flipX = true;
             facingDirection = -1;
         }
     }

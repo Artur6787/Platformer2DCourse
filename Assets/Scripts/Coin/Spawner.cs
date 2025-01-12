@@ -1,22 +1,29 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private float _spawnTime;
     [SerializeField] private Coin _coinPrefab;
+    [SerializeField] private List<SpawnPoint> _spawnPoints;
 
-    private SpawnPoint[] _points;
     private bool _isWorking = true;
-    private int _minValue = 0;
-
-    private void Awake()
-    {
-        _points = GetComponentsInChildren<SpawnPoint>();
-    }
 
     private void Start()
     {
+        if (_coinPrefab == null)
+        {
+            Debug.LogError("Coin prefab is not assigned in the inspector!");
+            return;
+        }
+
+        if (_spawnPoints.Count == 0)
+        {
+            Debug.LogError("No spawn points assigned in the inspector!");
+            return;
+        }
+
         StartCoroutine(Spawn());
     }
 
@@ -26,22 +33,17 @@ public class Spawner : MonoBehaviour
 
         while (_isWorking)
         {
-            if (_points.Length > _minValue)
+            foreach (var spawnPoint in _spawnPoints)
             {
-                SpawnPoint spawnPoint = _points[Random.Range(_minValue, _points.Length)];
-                Coin coin = spawnPoint.Spawn();
-
-                if (coin != null)
-                {
-                    coin.Destroyed += OnCoinDestroyed;
-                }
+                Coin coin = Instantiate(_coinPrefab, spawnPoint.transform.position, Quaternion.identity);
+                coin.Destroyed += OnCoinDestroyed;
             }
 
             yield return time;
         }
     }
 
-    private void OnCoinDestroyed(Coin destroyedCoin)
+    private void OnCoinDestroyed(CollectibleItem destroyedCoin)
     {
         Debug.Log("Монета уничтожена: " + destroyedCoin.name);
     }
