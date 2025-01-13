@@ -10,9 +10,14 @@ public abstract class CollectibleItem : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out Mover movement))
         {
-            Collected?.Invoke(this);
-            Destroyed?.Invoke(this);
+            HandleCollected();
             Destroy(gameObject);
         }
+    }
+
+    public void HandleCollected()
+    {
+        Collected?.Invoke(this);
+        Destroyed?.Invoke(this);
     }
 }

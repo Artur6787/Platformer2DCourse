@@ -98,7 +98,8 @@ public class Mover : MonoBehaviour
         bool isJumping = !_isGrounded;
         bool isRunning = _currentMoveInput.x != 0;
 
-        _animationHandler.UpdateAnimation(isJumping, isRunning);
+        _animationHandler.UpdateJumpAnimation(isJumping);
+        _animationHandler.UpdateRunAnimation(isRunning);
     }
 
     public void SetGroundedState(bool state)
@@ -122,5 +123,5 @@ public class Mover : MonoBehaviour
         {
             SetGroundedState(false);
         }
-     }
+    }
 }

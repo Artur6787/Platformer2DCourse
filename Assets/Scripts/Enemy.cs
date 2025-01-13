@@ -26,7 +26,6 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         MoveAlongPath();
-        //Reflect();
     }
 
     private void MoveAlongPath()

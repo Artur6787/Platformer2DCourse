@@ -12,9 +12,13 @@ public class AnimationHandler : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    public void UpdateAnimation(bool isJumping, bool isRunning)
+    public void UpdateJumpAnimation(bool isJumping)
     {
         _animator.SetBool(IsJumping, isJumping);
+    }
+
+    public void UpdateRunAnimation(bool isRunning)
+    {
         _animator.SetBool(IsRunning, isRunning);
     }
 }
