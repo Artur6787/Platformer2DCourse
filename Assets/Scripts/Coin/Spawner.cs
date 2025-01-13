@@ -10,20 +10,21 @@ public class Spawner : MonoBehaviour
 
     private bool _isWorking = true;
 
-    private void Start()
+    private void OnValidate()
     {
         if (_coinPrefab == null)
         {
-            Debug.LogError("Coin prefab is not assigned in the inspector!");
-            return;
+            Debug.LogError("Префаб монеты не назначен в инспекторе!");
         }
 
         if (_spawnPoints.Count == 0)
         {
-            Debug.LogError("No spawn points assigned in the inspector!");
-            return;
+            Debug.LogError("Нет назначенных точек спавна в инспекторе!");
         }
+    }
 
+    private void Start()
+    {
         StartCoroutine(Spawn());
     }
 

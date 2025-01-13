@@ -1,14 +1,15 @@
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private Transform _path;
     [SerializeField] private float _speed;
 
     private Transform[] _points;
-    private int _currentPoint;
+    private int _currentPointIndex;
     private SpriteRenderer _sprite;
-    private int facingDirection = 1;
+    private int _facingDirection = 1;
 
     private void Start()
     {
@@ -25,37 +26,31 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         MoveAlongPath();
-        Reflect();
+        //Reflect();
     }
 
     private void MoveAlongPath()
     {
-        Transform target = _points[_currentPoint];
+        Transform target = _points[_currentPointIndex];
         transform.position = Vector3.MoveTowards(transform.position, target.position, _speed * Time.deltaTime);
 
-        if (transform.position == target.position)
+        if (Vector3.Distance(transform.position, target.position) < 0.1f)
         {
-            _currentPoint++;
+            _currentPointIndex++;
 
-            if (_currentPoint >= _points.Length)
+            if (_currentPointIndex >= _points.Length)
             {
-                _currentPoint = 0;
+                _currentPointIndex = 0;
             }
+
+            Reflect();
         }
     }    
     private void Reflect()
     {
-        Vector3 directionToTarget = (_points[_currentPoint].position - transform.position).normalized;
+        Vector3 directionToTarget = (_points[_currentPointIndex].position - transform.position).normalized;
         float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
-
-        if (directionToTarget.x > 0)
-        {
-            facingDirection = 1;
-        }
-        else if (directionToTarget.x < 0)
-        {
-            facingDirection = -1;
-        }
+        _facingDirection = directionToTarget.x > 0 ? 1 : -1;
     }
 }

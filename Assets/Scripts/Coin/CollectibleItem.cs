@@ -8,7 +8,7 @@ public abstract class CollectibleItem : MonoBehaviour
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out Movement movement))
+        if (collision.gameObject.TryGetComponent(out Mover movement))
         {
             Collected?.Invoke(this);
             Destroyed?.Invoke(this);

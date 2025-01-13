@@ -1,10 +1,13 @@
+using System;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+[RequireComponent(typeof(SpriteRenderer))]
+public class Mover : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
 
+    public event Action<bool> OnGroundedStateChanged;
     public bool IsGrounded => _isGrounded;
     private bool _isGrounded;
     private Rigidbody2D _rigidbody2d;
@@ -21,6 +24,19 @@ public class Movement : MonoBehaviour
         _animationHandler = GetComponent<AnimationHandler>();
         _sprite = GetComponent<SpriteRenderer>();
         _inputHandler = GetComponent<InputHandler>();
+    }
+
+    private void Update()
+    {
+        Reflect();
+        UpdateAnimation();
+    }
+
+    private void FixedUpdate()
+    {
+        Move();
+        Jump();
+        CheckGroundStatus();
     }
 
     private void OnEnable()
@@ -46,18 +62,6 @@ public class Movement : MonoBehaviour
         {
             _jumpRequested = true;
         }
-    }
-
-    private void Update()
-    {
-        Reflect();
-        UpdateAnimation();
-    }
-
-    private void FixedUpdate()
-    {
-        Move();
-        Jump();
     }
 
     private void Move()
@@ -99,6 +103,24 @@ public class Movement : MonoBehaviour
 
     public void SetGroundedState(bool state)
     {
-        _isGrounded = state;
+        if (_isGrounded != state) 
+        {
+            _isGrounded = state; 
+            OnGroundedStateChanged?.Invoke(_isGrounded);
+        }
     }
+
+    private void CheckGroundStatus()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1f);
+        
+        if (hit.collider != null) 
+        {
+            SetGroundedState(true);
+        }
+        else 
+        {
+            SetGroundedState(false);
+        }
+     }
 }
